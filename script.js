@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
    const num = 266219;
    let result = 1;
 
+   const numStr = num.toString();
+
    for (let i = 0; i < num.toString().length; i++) {
-      result *= num.toString()[i];
+      result *= numStr[i];
    }
 
    console.log('result: ', result);
