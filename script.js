@@ -1,33 +1,58 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
    "use strict";
 
-   let arr = ['12', '21', '135', '542', '421', '256', '421'];
+   const isNumber = function (numb) {
+      return !isNaN(parseFloat(numb)) && isFinite(numb);
+   }
 
-for (let i = 0; i < arr.length; i++) {
-  if (String(arr[i])[0] == '2' || String(arr[i])[0] == '4') {
-    console.log(arr[i]);
-  }
-}
-console.log('-------------------');
+   const gameBot = function () {
+      const rundomNumber = Math.floor(Math.random() * 100) + 1;
+      let attempt = 10;
 
-const isCheckNum = function (number) {
-  if (number < 1) return false;
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
-  return true;
-}
+      function numRecursion () {
+         if (attempt < 1) {
+            if (confirm('Попытки закончились, хотите сыграть еще?')) {
+               return gameBot()();
+            } else {
+               return;
+            }
+         } else {
+            attempt--;
+         }
+         let numUser = prompt('Угадай число от 1 до 100');
 
-const primeNumb = function (num) {
-  for (let i = 2; i <= num; i++) {
-    if (isCheckNum(i)) {
-      console.log('Делители этого числа: 1 и ' + i);
-    }
-  }
-}
+         if (numUser === null) {
+         alert('Игра окончена');
+         return;
+         }
 
-primeNumb(100);
+         if (!isNumber(numUser)) {
+            alert('Введи число!');
+            return numRecursion();
+         }
+         
+         numUser = +numUser;
+         
+         if (numUser > rundomNumber) {
+            alert('Загаданное число меньше, осталлось попыток: ' + attempt);
+            return numRecursion();
+         } else if (numUser < rundomNumber) {
+            alert('Загаданное число больше, осталлось попыток: ' + attempt);
+            return numRecursion();
+         } else if (numUser === rundomNumber) {
+            if (confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?')) {
+               return gameBot()();
+            } else {
+               return;
+            }
+         }
 
+      }
+
+      return numRecursion;
+   }
+
+   const gamebotHero = gameBot();
+   gamebotHero();
+ 
 });
