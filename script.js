@@ -1,58 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
    "use strict";
 
-   const isNumber = function (numb) {
-      return !isNaN(parseFloat(numb)) && isFinite(numb);
-   }
+   const week = ['вс','пн','вт','ср','чт','пт','сб'];
 
-   const gameBot = function () {
-      const rundomNumber = Math.floor(Math.random() * 100) + 1;
-      let attempt = 10;
+   let divWeek = document.querySelector('.week');
+   const today = new Date();
 
-      function numRecursion () {
-         if (attempt < 1) {
-            if (confirm('Попытки закончились, хотите сыграть еще?')) {
-               return gameBot()();
-            } else {
-               return;
-            }
-         } else {
-            attempt--;
-         }
-         let numUser = prompt('Угадай число от 1 до 100');
-
-         if (numUser === null) {
-         alert('Игра окончена');
-         return;
-         }
-
-         if (!isNumber(numUser)) {
-            alert('Введи число!');
-            return numRecursion();
-         }
-         
-         numUser = +numUser;
-         
-         if (numUser > rundomNumber) {
-            alert('Загаданное число меньше, осталлось попыток: ' + attempt);
-            return numRecursion();
-         } else if (numUser < rundomNumber) {
-            alert('Загаданное число больше, осталлось попыток: ' + attempt);
-            return numRecursion();
-         } else if (numUser === rundomNumber) {
-            if (confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?')) {
-               return gameBot()();
-            } else {
-               return;
-            }
-         }
-
+   week.forEach((item, index) => {
+   const newP = document.createElement('p');
+      if (index === today.getDay()) {
+         divWeek.append(newP, week[index].bold());
+      } else if (index === 0 || index === 6) {
+         divWeek.append(newP, week[index].italics());
+      } else {
+         divWeek.append(newP, week[index]);
       }
-
-      return numRecursion;
-   }
-
-   const gamebotHero = gameBot();
-   gamebotHero();
- 
+   })
+   
 });
