@@ -86,19 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
          this.adaptive = confirm("Нужен ли адаптив на сайте?");
       },
       addPrices: function () {
-         for (let screen of this.screens) {
-            this.screenPrice += +screen.price;
-         }
 
-         console.log('this.screenPrice: ', this.screenPrice);
-
-         let pp = 0;
-
-         pp = this.screens.reduce((acc, currentItem) => {
+         this.screenPrice = this.screens.reduce((acc, currentItem) => {
             return acc + currentItem.price;
          }, 0);
-
-         console.log('pp: ', pp);
 
          for (let key in this.services) {
             this.allServicePrices += this.services[key];
