@@ -1,127 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
    "use strict";
 
-   const arrData = {
-      title: '',
-      screens: [],
-      screenPrice: 0,
-      adaptive: '',
-      rollback: 10,
-      allServicePrices: 0,
-      fullPrice: 0,
-      servicePercentPrice: 0,
-      services: {},
-      i: 0,
-      isNumber: function (num) {
-         return num !== null && num.trim() !== '' && !isNaN(num) && isFinite(num);
-      },
-      isString: function (str) {
-         return str !== null && str.trim() !== '' && !this.isNumber(str);
-      },
-      showTypeOf: function (variable) {
-         console.log(variable, typeof variable);
-      },
-      getFullPrice: function () {
-         this.fullPrice = this.screenPrice + this.allServicePrices;
-      },
-      getServicePercentPrices: function () {
-         this.servicePercentPrice = this.fullPrice - (this.fullPrice * (this.rollback / 100));
-      },
-      getTitle: function () {
-         this.title = this.title.trim()[0].toUpperCase() + this.title.trim().slice(1).toLowerCase();
-      },
-      getRollbackMessage: function (price) {
-         if (price >= 30000) return "Даем скидку в 10%";
-         else if (price >= 15000 && price < 30000) return "Даем скидку в 5%";
-         else if (price < 15000 && price >= 0) return "Скидка не предусмотрена";
-         else return "Что то пошло не так";
-      },
-      asking: function () {
+   const getEndHour = (hour) => {
+      if (hour > 10 && hour < 15) return 'часов';
+      else if (hour % 10 === 1) return 'час';
+      else if (hour % 10 >= 2 && hour % 10 <= 4) return 'часа';
+      return 'часов';
+   };
 
-         do {
-            this.title = prompt("Как называется ваш проект?", "Калькулятор верстки");
-         }
-         while (!this.isString(this.title));
+   const getEndMinutes = (minute) => {
+      if (minute > 10 && minute < 15) return 'минут';
+      else if (minute % 10 === 1) return 'минута';
+      else if (minute % 10 >= 2 && minute % 10 <= 4) return 'минуты';
+      return 'минут';
+   };
 
+   const getEndSeconds = (second) => {
+      if (second > 10 && second < 15) return 'секунд';
+      else if (second % 10 === 1) return 'секунда';
+      else if (second % 10 >= 2 && second % 10 <= 4) return 'секунды';
+      return 'секунд';
+   };
 
-         for (let i = 0; i < 2; i++) {
+   const dateFunction = (now) => {
+      const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      const year = now.getFullYear();        // 2026
+      const month = now.getMonth();          // 0–11 (0 = январь)
+      const monthName = months[now.getMonth()];  // 0–11 (0 = январь)
+      const day = now.getDate();   // 1–31
+      const dayName = days[now.getDay()].charAt(0).toUpperCase() + days[now.getDay()].slice(1);   // 0-6
+      const hours = now.getHours();          // 0–23
+      const minutes = now.getMinutes();      // 0–59
+      const seconds = now.getSeconds();
 
-            let name = '';
-            do {
-               name = prompt("Какие типы экранов нужно разработать?");
-            }
-            while (!this.isString(name));
+      return `Сегодня ${dayName}, ${day} ${monthName} ${year} года, ${hours} ${getEndHour(hours)} ${minutes} ${getEndMinutes(minutes)} ${seconds} ${getEndSeconds(seconds)}`;
+   };
 
-            let price = 0;
+   const addZero = (num) => {
+      if (num < 10) return `0${num}`;
+      else return num;
+   };
 
-            do {
-               price = prompt("Сколько будет стоить данная работа?");
-            }
-            while (!this.isNumber(price))
+   const shortDateFunc = (now) => {
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
 
-            this.screens.push({ id: i, name: name, price: +price });
-         }
+      return `${addZero(day)}.${addZero(month)}.${year} - ${addZero(hours)}:${addZero(minutes)}:${addZero(seconds)}`;
+   };
 
-         for (let i = 0; i < 2; i++) {
-            let name = '';
+   const createDate = () => {
+      const now = new Date();
+      divElement.innerHTML = dateFunction(now);
+      shortDate.innerHTML = shortDateFunc(now);
+        
+   }; 
 
-            do {
-               name = prompt("Какой дополнительный тип услуги нужен?");
-            }
-            while (!this.isString(name));
-
-            let price;
-            do {
-               price = prompt("Сколько это будет стоить?");
-            } while (!this.isNumber(price));
-
-            if (name in this.services) {
-               this.services[`${name} ${i}`] = +price;
-            } else {
-               this.services[name] = +price;
-            }
-            
-         }
-
-         this.adaptive = confirm("Нужен ли адаптив на сайте?");
-      },
-      addPrices: function () {
-
-         this.screenPrice = this.screens.reduce((acc, currentItem) => {
-            return acc + currentItem.price;
-         }, 0);
-
-         for (let key in this.services) {
-            this.allServicePrices += this.services[key];
-         }
-      },
-      start: function () {
-         this.asking();
-         this.addPrices();
-         this.getFullPrice();
-         this.getServicePercentPrices();
-         this.getTitle();
-         this.logger();
-      },
-      logger: function () {
-         this.showTypeOf(this.title)
-         this.showTypeOf(this.screenPrice)
-         this.showTypeOf(this.adaptive)
-
-         console.log(this.getRollbackMessage(this.fullPrice))
-         console.log(this.screens.length)
-         console.log(this.servicePercentPrice)
-         console.log(this.screens);
-
-         console.log("Стоимость верстки экранов " + this.screenPrice + " рублей и Стоимость разработки сайта " + this.servicePercentPrice + " рублей")
-
-         for (let key in this) {
-            if (typeof this[key] !== 'function') {
-               console.log(this[key]);
-            }
-         }
-      }
-   }
-
-   arrData.start();
+   const divElement = document.createElement('div');
+   const shortDate = document.createElement('div');
+   divElement.className = "new-date";
+   shortDate.className = "short-date";
+   document.body.prepend(shortDate);
+   document.body.prepend(divElement);
+   createDate();
+   setInterval(createDate, 1000);
 });
